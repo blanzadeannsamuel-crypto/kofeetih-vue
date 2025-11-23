@@ -1,0 +1,150 @@
+/* AUTH FORM CONTAINER */
+.auth-container {
+  width: 90%;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px 25px;
+  background: linear-gradient(145deg, #fff6f0, #f9ede2); /* pastel coffee */
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  text-align: center;
+  font-family: 'Poppins', Arial, sans-serif;
+  border: 1px solid #e5d3b8;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* LOGO */
+.auth-logo {
+  font-size: 32px;
+  font-weight: 700;
+  color: #7b4f36; /* soft coffee brown */
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+  font-family: 'Pacifico', cursive;
+}
+
+/* Add a small coffee cup icon before text */
+.auth-logo::before {
+  content: '';
+  margin-right: 10px;
+  font-size: 36px;
+  vertical-align: middle;
+  color: #b48a6a; /* pastel accent */
+}
+
+/* TITLE */
+.auth-container h2 {
+  margin-bottom: 25px;
+  font-size: clamp(22px, 6vw, 26px);
+  color: #7b4f36;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* INPUT FIELDS */
+.auth-container input,
+.auth-container select {
+  width: 100%;
+  max-width: 350px;
+  padding: 14px;
+  margin: 8px 0;
+  border: 2px solid #dbc2ad;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fff8f3;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+
+.auth-container input:focus,
+.auth-container select:focus {
+  border-color: #a86c4f;
+  outline: none;
+  box-shadow: 0 0 8px rgba(168,108,79,0.4);
+}
+
+/* BUTTON */
+.auth-container button {
+  width: 100%;
+  max-width: 350px;
+  padding: 14px;
+  margin-top: 12px;
+  background: #a86c4f;
+  border: none;
+  color: #fff8f3;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.auth-container button:hover {
+  background: #8b5a42;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* MESSAGE TEXT */
+.auth-container p {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #6e4d3d;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  width: 100%;
+}
+
+/* NAV LINKS */
+nav a {
+  margin: 0 10px;
+  color: #a86c4f;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.2s;
+  text-align: center;
+}
+
+nav a:hover {
+  text-decoration: underline;
+  color: #8b5a42;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 25px 15px;
+  }
+
+  .auth-logo {
+    font-size: 24px;
+  }
+
+  .auth-container h2 {
+    font-size: 22px;
+  }
+
+  .auth-container input,
+  .auth-container select,
+  .auth-container button {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+@media (min-width: 600px) {
+  .auth-container {
+    max-width: 400px;
+  }
+}

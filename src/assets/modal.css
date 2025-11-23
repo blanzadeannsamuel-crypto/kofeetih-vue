@@ -1,0 +1,202 @@
+/* Make the backdrop scrollable */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 248, 240, 0.8); /* pastel warm overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  animation: fadeIn 0.2s ease;
+
+  /* Allow scrolling if modal is too tall */
+  overflow-y: auto;
+  padding: 20px; 
+}
+
+/* Limit modal height and allow internal scrolling */
+.modal-card {
+  background: #fff8f2; /* soft pastel coffee cream */
+  width: 500px;
+  max-width: 95%;
+  max-height: 90vh;
+  border-radius: 14px;
+  padding: 25px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(180, 120, 80, 0.25); /* soft coffee shadow */
+  animation: pop 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+
+  overflow-y: auto;
+}
+
+/* Confirmation Modal overrides */
+.confirm-modal {
+  width: 350px;
+  text-align: center;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(180, 120, 80, 0.3);
+  background: #fff0e6; /* pastel apricot */
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.yes-btn, .no-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yes-btn {
+  background-color: #a8d5ba; /* pastel green */
+  color: #fff;
+}
+
+.yes-btn:hover {
+  background-color: #90c9a0;
+}
+
+.no-btn {
+  background-color: #f8a5a5; /* pastel red/pink */
+  color: #fff;
+}
+
+.no-btn:hover {
+  background-color: #f29191;
+}
+
+/* Animations */
+@keyframes pop {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #555; /* softer dark for pastel */
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #f8a5a5;
+}
+
+/* Modal Image */
+.modal-img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  object-fit: cover;
+  max-height: 300px;
+  border: 2px solid #ffe6d6; /* subtle pastel border */
+}
+
+/* Modal Text */
+.modal-card h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #5d4037; /* soft coffee brown */
+}
+
+.modal-card p {
+  font-size: 15px;
+  margin: 4px 0;
+  color: #7d5a50; /* medium brown */
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.like-favorite button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.like-favorite button:hover {
+  opacity: 0.85;
+}
+
+.like-favorite button:first-child {
+  background-color: #ffb3b3; /* pastel pink */
+  color: #fff;
+}
+
+.like-favorite button:last-child {
+  background-color: #ffd699; /* pastel orange */
+  color: #fff;
+}
+
+.rate select {
+  margin-left: 8px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #d3bfa2; /* soft pastel border */
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .modal-card {
+    width: 90%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .modal-card {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .modal-card h2 {
+    font-size: 20px;
+  }
+
+  .modal-card p {
+    font-size: 14px;
+  }
+}

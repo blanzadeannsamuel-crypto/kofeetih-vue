@@ -1,0 +1,175 @@
+/* Preference Page Container */
+.preference-page {
+  position: relative;
+  padding: 50px 35px 35px 35px; /* increased top padding for breathing space */
+  max-width: 700px;
+  margin: 50px auto;
+  background-color: #fcf5f0;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
+}
+
+/* Page Heading */
+.preference-page h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #7b4f36;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* Skip Link */
+.skip-top {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 13px;
+  color: #7b4f36;
+  opacity: 0.7;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.skip-top:hover {
+  opacity: 1;
+}
+
+/* Form Layout */
+.preference-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* more spacing between groups */
+}
+
+.preference-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* space between label and input */
+}
+
+/* Labels */
+.preference-form label {
+  font-weight: 500;
+  color: #6e4d3d;
+  font-size: 15px;
+  display: block;
+}
+
+/* Inputs & Selects */
+.preference-form input,
+.preference-form select {
+  width: 100%;
+  padding: 16px 18px; /* increased padding for breathing space */
+  border-radius: 12px;
+  border: 1px solid #e0cfc0;
+  font-size: 15px;
+  background-color: #fff8f3;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.preference-form input:focus,
+.preference-form select:focus {
+  outline: none;
+  border-color: #a86c4f;
+  box-shadow: 0 0 8px rgba(168, 108, 79, 0.3);
+}
+
+/* Checkbox / Yes-No Group */
+.checkbox-group {
+  display: flex;
+  gap: 30px;
+  margin-top: 5px;
+}
+
+.checkbox-group > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Add subtle icon hint only for checkboxes (optional) */
+.checkbox-group label::before {
+  content: "☑️ ";
+  font-size: 14px;
+  margin-right: 4px;
+  vertical-align: middle;
+  opacity: 0.6;
+}
+
+.checkbox-group select {
+  padding-left: 36px; /* space for pseudo icon */
+}
+
+/* Buttons Area */
+.actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actions button[type="submit"] {
+  background-color: #a86c4f;
+  color: #fff;
+}
+
+.actions button[type="submit"]:hover {
+  background-color: #8b5a42;
+}
+
+.actions .skip-btn {
+  background-color: #fff8f3;
+  color: #7b4f36;
+  border: 1px solid #e0cfc0;
+}
+
+.actions .skip-btn:hover {
+  background-color: #f3e7df;
+}
+
+/* Message Styling */
+.message {
+  margin-top: 20px;
+  font-size: 15px;
+  color: #7b4f36;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .preference-page {
+    padding: 30px 20px 25px 20px;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    flex: unset;
+    width: 100%;
+  }
+}
