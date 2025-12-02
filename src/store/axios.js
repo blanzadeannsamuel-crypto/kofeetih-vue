@@ -7,18 +7,21 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) {
+  if (token && token !== "undefined") {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401){
+  response => response,
+  async error => {
+    if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
-      if(router) router.push('/');
+      localStorage.removeItem("user");
+      if (router.currentRoute.value.name !== "login") {
+        await router.push("/");
+      }
     }
     return Promise.reject(error);
   }

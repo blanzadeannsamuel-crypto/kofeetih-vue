@@ -53,15 +53,25 @@ export default {
       const auth = useAuthStore();
 
       try {
-        await auth.login({
+        // 🔥 LOGIN
+        const userData = await auth.login({
           email: this.email,
-          password: this.password
+          password: this.password,
         });
+
+        // userData contains: id, name, email, role
+        const role = userData?.role;
 
         this.message = "☕ Login successful!";
 
+        // Small pause for UI feedback
         setTimeout(() => {
-          this.$router.push("/main/catalog");
+          // 🔥 REDIRECT BASED ON ROLE
+          if (role === "admin") {
+            this.$router.push("/admin/catalog");
+          } else {
+            this.$router.push("/main/catalog");
+          }
         }, 500);
 
       } catch (err) {

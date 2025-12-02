@@ -5,6 +5,7 @@ html, body {
   height: 100%;
   width: 100%;
   font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
 }
 
 .layout {
@@ -14,18 +15,18 @@ html, body {
 }
 
 /* ===========================
-   TOPBAR (Thinner + Cleaner)
+   TOPBAR (Logo left, logout beside nav)
    =========================== */
 .topbar {
   width: 100%;
   background-color: #7b4f36;
   color: white;
-  padding: 0.35rem 1.2rem; /* thinner spacing */
-  min-height: 48px; /* thinner height */
+  padding: 0.35rem 1.5rem;
+  min-height: 48px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 20px; /* space between logo and nav */
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
@@ -36,10 +37,9 @@ html, body {
 }
 
 .top-nav {
-  flex: 1;               /* lets nav use remaining middle space */
   display: flex;
-  justify-content: center;
-  gap: 15px;
+  gap: 15px; /* space between normal nav items */
+  align-items: center;
 }
 
 .nav-item {
@@ -47,7 +47,10 @@ html, body {
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 500;
-  padding: 2px 4px;
+  padding: 4px 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .nav-item:hover,
@@ -56,59 +59,18 @@ html, body {
   color: #ffffff;
 }
 
-.top-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;               /* smaller spacing */
-  margin-right: 10px;     /* pulls the group left */
-  flex-shrink: 0;         /* prevents it from being pushed off-screen */
-}
-
-
-.username {
-  color: #fcecd8;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* LOGOUT BUTTON */
+/* LOGOUT NAV ITEM: add spacing from Settings */
 .logout {
   background-color: #d86c5b;
   color: #fff;
-  border: none;
-  padding: 5px 10px;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
+  padding: 4px 5px;
+  margin-left: 5in; /* spacing from the previous nav link (Settings) */
   transition: 0.2s;
 }
 
 .logout:hover {
   background-color: #b45a48;
-}
-
-/* ICON BUTTON */
-.logout-icon {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 2px 4px;      /* smaller → more space */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logout-icon .icon {
-  width: 20px;
-  height: 20px;
-  fill: #fcecd8;
-  transition: 0.2s;
-}
-
-.logout-icon:hover .icon {
-  fill: white;
-  transform: scale(1.1);
 }
 
 /* ===========================
@@ -134,7 +96,7 @@ html, body {
 }
 
 /* ===========================
-   LOGOUT MODAL (Improved)
+   LOGOUT MODAL
    =========================== */
 .modal-overlay {
   position: fixed;
@@ -170,57 +132,53 @@ html, body {
   margin-bottom: 22px;
 }
 
-/* MODAL BUTTONS */
-.modal-buttons {
+.modal-actions {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
 
-.modal-btn {
+.btn-confirm {
   padding: 8px 18px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-}
-
-.modal-confirm {
-  background: #d86c5b;
+  background-color: #d86c5b;
   color: white;
 }
 
-.modal-confirm:hover {
-  background: #b45a48;
+.btn-confirm:hover {
+  background-color: #b45a48;
 }
 
-.modal-cancel {
-  background: #e8dcd3;
+.btn-cancel {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background-color: #e8dcd3;
   color: #7b4f36;
 }
 
-.modal-cancel:hover {
-  background: #d9cabe;
+.btn-cancel:hover {
+  background-color: #d9cabe;
 }
 
 /* RESPONSIVE */
 @media (max-width: 700px) {
   .top-nav {
-  flex: 1;               /* lets nav use remaining middle space */
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
+    gap: 12px;
+    justify-content: center;
+  }
   .topbar {
-  width: 100%;
-  background-color: #7b4f36;
-  color: white;
-  padding: 0.4rem 0.8rem; 
-  min-height: 55px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
+    padding: 0.4rem 0.8rem;
+    min-height: 55px;
+  }
+  .top-right {
+    margin-left: 1rem; /* reduce spacing on small screens */
+  }
 }

@@ -1,40 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../store/auth'
-
-// import Program from '../program.vue'
-// import LoginPage from '../loginpage.vue'
+import api from '../store/axios'
 
 import AuthLayout from '../layouts/authlayout.vue'
 import MainLayout from '../layouts/mainlayout.vue'
 
 import Login from '../pages/login.vue'
 import Register from '../pages/register.vue'
-import preference from '@/mpages/preference.vue'
 import Catalog from '../mpages/catalog.vue'
 import Profile from '../mpages/profile.vue'
 import Charts from '../mpages/charts.vue'
-import Settings from '../mpages/settings.vue'
+import ManageUser from '../mpages/manageUser.vue'
 import Preference from '@/mpages/preference.vue'
 
-
 const routes = [
-  // {
-  //   path: '/program',
-  //   name: 'program',
-  //   component: Program,
-  //   meta: { requiresAuth: true },
-  // },
-  // {
-  //   path: '/loginpage',
-  //   name: 'loginpage',
-  //   component: LoginPage
-  // },
   {
     path: '/',
     component: AuthLayout,
     children: [
-      { path: '/', name: 'login', component: Login },
-      { path: '/register', name: 'register', component: Register }
+      { path: '', name: 'login', component: Login },
+      { path: 'register', name: 'register', component: Register }
     ]
   },
 
@@ -43,12 +28,11 @@ const routes = [
     component: MainLayout,
     meta: { requiresAuth: true },
     children: [
-      { path: 'preference', name: 'preference', component: Preference},
-      { path: 'catalog', name: 'catalog', component: Catalog },
-      { path: 'profile', name: 'profile', component: Profile },
-      { path: 'charts', name: 'charts', component: Charts },
-      { path: 'settings', name: 'settings', component: Settings },
-
+      { path: 'preference', name: 'preference', component: Preference, meta: { role: ['user','admin'] }},
+      { path: 'catalog', name: 'catalog', component: Catalog, meta: { role: ['user','admin'] }},
+      { path: 'profile', name: 'profile', component: Profile, meta: { role: ['user','admin'] }},
+      { path: 'ManageUser', name: 'ManageUser', component: ManageUser, meta: { role: ['admin'] }},
+      { path: 'charts', name: 'charts', component: Charts, meta: { role: ['admin'] }},
     ]
   }
 ]
@@ -58,19 +42,31 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore()
 
-  if (to.meta.requiresAuth && !auth.token) {
-    return next('/')
+  if (to.meta.requiresAuth && !auth.token) return next('/')
+
+  if (auth.token && !auth.user) {
+    try {
+      const res = await api.get('/user')
+      auth.user = res.data
+    } catch (err) {
+      console.error('Error fetching user in router guard:', err)
+      auth.token = null
+      localStorage.removeItem('token')
+      return next('/')
+    }
   }
 
-  if ((to.name === 'login' || to.name === 'register') 
-      && auth.token 
-      && auth.token !== "undefined") {
-    return next('/main/preference')
+  if ((to.name === 'login' || to.name === 'register') && auth.token) {
+    return next('/main/catalog')
   }
 
+  const userRole = auth.user?.role
+  if (to.meta.role && !to.meta.role.includes(userRole)) {
+    return next('/main/catalog') 
+  }
 
   next()
 })

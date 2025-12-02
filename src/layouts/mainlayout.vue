@@ -1,32 +1,23 @@
 <template>
   <div class="layout">
 
-    <!-- TOPBAR (now contains navigation) -->
+    <!-- TOPBAR -->
     <header class="topbar">
       <h2 class="logo">Kofeetih?</h2>
 
       <nav class="top-nav">
-        <router-link to="/main/catalog" class="nav-item" active-class="active">Catalog</router-link>
-        <router-link to="/main/charts" class="nav-item" active-class="active">Charts</router-link>
-        <router-link to="/main/profile" class="nav-item" active-class="active">Profile</router-link>
-        <router-link to="/main/settings" class="nav-item" active-class="active">Settings</router-link>
+        <template v-if="userFetched">
+          <router-link v-if="showCatalog" to="/main/catalog" class="nav-item" active-class="active">Catalog</router-link>
+          <router-link v-if="showCharts" to="/main/charts" class="nav-item" active-class="active">Charts</router-link>
+          <router-link v-if="showProfile" to="/main/profile" class="nav-item" active-class="active">Profile</router-link>
+          <router-link v-if="showSettings" to="/main/ManageUser" class="nav-item" active-class="active">Manage User</router-link>
+          <router-link v-if="showPreference" to="/main/preference" class="nav-item" active-class="active">Preference</router-link>
+
+          <!-- LOGOUT NAV ITEM -->
+          <button class="nav-item logout" @click="showLogoutModal = true">Logout</button>
+        </template>
       </nav>
-
-      <div class="top-right">
-        <router-link v-if="username" to="/main/profile" class="username">
-          {{ username }}
-        </router-link>
-
-        <button class="logout-icon" @click="showLogoutModal = true">
-          <svg viewBox="0 0 24 24" class="icon">
-            <path d="M16 17l1.41-1.41L14.83 13H9v-2h5.83l-2.58-2.59L16 7l5 5-5 5z"/>
-            <path d="M4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-          </svg>
-        </button>
-
-      </div>
     </header>
-
     <!-- MAIN CONTENT -->
     <div class="main-content">
       <h3 class="page-title">{{ pageTitle }}</h3>
@@ -76,6 +67,7 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const showLogoutModal = ref(false)
+    const userFetched = ref(false) // track if user info is loaded
 
     const confirmLogout = async () => {
       try {
@@ -89,7 +81,6 @@ export default {
     }
 
     const pageTitle = computed(() => route.name ? route.name.toUpperCase() : 'PAGE')
-    const username = computed(() => auth.user?.display_name || '')
 
     const fetchUser = async () => {
       if (!auth.user && auth.token) {
@@ -98,7 +89,11 @@ export default {
           auth.user = res.data
         } catch (err) {
           console.error('Error fetching user for layout:', err)
+        } finally {
+          userFetched.value = true
         }
+      } else {
+        userFetched.value = true
       }
     }
 
@@ -106,9 +101,18 @@ export default {
       fetchUser()
     })
 
-    return { showLogoutModal, confirmLogout, pageTitle, username, auth }
+    // Role-based navigation
+    const showCatalog = computed(() => auth.user?.role === 'admin' || auth.user?.role === 'user')
+    const showCharts = computed(() => auth.user?.role === 'admin')
+    const showProfile = computed(() => auth.user?.role === 'admin' || auth.user?.role === 'user')
+    const showSettings = computed(() => auth.user?.role === 'admin')
+    const showPreference = computed(() => auth.user?.role === 'user')
+
+    return { 
+      showLogoutModal, confirmLogout, pageTitle, auth, userFetched,
+      showCatalog, showCharts, showProfile, showSettings, showPreference
+    }
   }
 }
 </script>
-
 <style src="../assets/mainlayout.css"></style>

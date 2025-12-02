@@ -2,9 +2,42 @@
   <div class="catalog-page">
     <h2 align="center">Coffee Catalog</h2>
 
-    <!-- Controls: Search + Filters -->
+    <!-- Recommended Coffees -->
+    <div v-if="topRecommendations.length" class="recommendation-section">
+      <h2>☕ Recommended Coffees</h2>
+
+      <div class="grid recommendation-grid">
+        <div class="card recommendation-card" v-for="coffee in topRecommendations" :key="coffee.id">
+          <img 
+            :src="coffee.coffee_image || '/images/placeholder.png'" 
+            class="coffee-img recommendation-img" 
+            @error="onImageError($event)" 
+          />
+
+          <h3>{{ coffee.coffee_name }}</h3>
+          <p>Type: {{ coffee.coffee_type }}</p>
+          <p>Ingredients: {{ coffee.ingredients }}</p>
+
+          <p class="reason">
+            {{ coffee.reasons?.length ? coffee.reasons.join(', ') : 'Recommended for you' }}
+          </p>
+
+          <button class="view-btn" @click="openModal(coffee)">View Coffee</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coffee Fact Modal -->
+    <div v-if="showFactModal" class="modal-backdrop" @click.self="closeFactModal">
+      <div class="modal-card fact-modal">
+        <button class="close-btn" @click="closeFactModal">✖</button>
+        <h3>☕ Did You Know?</h3>
+        <p>{{ coffeeFact }}</p>
+      </div>
+    </div>
+
+    <!-- Filters -->
     <div class="controls">
-      <!-- Search -->
       <input
         type="text"
         v-model="searchQuery"
@@ -13,9 +46,7 @@
         @input="applyFilters"
       />
 
-      <!-- Combined Filters -->
       <div class="filter-container">
-        <!-- Coffee Type (multi-select) -->
         <div class="filter-group">
           <label>Type:</label>
           <div class="checkbox-group">
@@ -26,7 +57,6 @@
           </div>
         </div>
 
-        <!-- Milk Option (single-select) -->
         <div class="filter-group">
           <label>Milk:</label>
           <select v-model="selectedMilk" class="milk-select" @change="applyFilters">
@@ -35,64 +65,74 @@
             <option value="no">No Milk</option>
           </select>
         </div>
-
-        <!-- Apply Button (optional, still works) -->
-        <button class="apply-btn" @click="applyFilters">Apply Filters</button>
       </div>
     </div>
 
-    <!-- Loading -->
+    <!-- Coffee List -->
     <div v-if="loading" class="loading">Loading coffees...</div>
 
-    <!-- Coffee Grid -->
     <div v-else class="grid">
       <div class="card" v-for="coffee in filteredCoffees" :key="coffee.id">
-        <img v-if="coffee.image_url" :src="coffee.image_url" class="coffee-img" />
+        <img 
+          v-if="coffee.coffee_image" 
+          :src="coffee.coffee_image" 
+          class="coffee-img" 
+          @error="onImageError($event)"
+        />
         <h3>{{ coffee.coffee_name }}</h3>
         <p><strong>Type:</strong> {{ coffee.coffee_type }}</p>
         <p><strong>Ingredients:</strong> {{ coffee.ingredients }}</p>
-        <p><strong>Average Rating:</strong> {{ coffee.rating || 0 }}</p>
-        <p><strong>Likes:</strong> {{ coffee.likes || 0 }}</p>
-        <p><strong>Favorites:</strong> {{ coffee.favorites || 0 }}</p>
+        <p><strong>Average Rating:</strong> ⭐ {{ coffee.rating }}</p>
+        <p><strong>Likes:</strong> {{ coffee.likes }}</p>
+        <p><strong>Favorites:</strong> {{ coffee.favorites }}</p>
+
         <button class="view-btn" @click="openModal(coffee)">View</button>
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Coffee Modal -->
     <div v-if="showModal" class="modal-backdrop" @click.self="closeModal">
       <div class="modal-card">
         <button class="close-btn" @click="closeModal">✖</button>
 
-        <img v-if="selectedCoffee?.image_url" :src="selectedCoffee.image_url" class="modal-img" />
+        <img 
+          v-if="selectedCoffee?.coffee_image" 
+          :src="selectedCoffee.coffee_image" 
+          class="modal-img" 
+          @error="onImageError($event)"
+        />
 
         <h2>{{ selectedCoffee.coffee_name }}</h2>
+
         <p><strong>Type:</strong> {{ selectedCoffee.coffee_type }}</p>
         <p><strong>Description:</strong> {{ selectedCoffee.description }}</p>
         <p><strong>Ingredients:</strong> {{ selectedCoffee.ingredients }}</p>
-        <p>
-          <strong>Price:</strong>
-          {{ selectedCoffee.minimum_price }} -
-          {{ selectedCoffee.maximum_price }}
-        </p>
-        <p><strong>Average Rating:</strong> ⭐ {{ selectedCoffee.rating || 0 }}</p>
-        <p><strong>Likes:</strong> {{ selectedCoffee.likes || 0 }}</p>
-        <p><strong>Favorites:</strong> {{ selectedCoffee.favorites || 0 }}</p>
+        <p><strong>Price:</strong> {{ selectedCoffee.minimum_price }} - {{ selectedCoffee.maximum_price }}</p>
+        <p><strong>Average Rating:</strong> ⭐ {{ selectedCoffee.rating }}</p>
+        <p><strong>Likes:</strong> {{ selectedCoffee.likes }}</p>
+        <p><strong>Favorites:</strong> {{ selectedCoffee.favorites }}</p>
 
         <div class="actions">
-          <div class="like-favorite">
-            <button @click="toggleLike">{{ liked ? "Unlike" : "Like" }}</button>
-          </div>
-          <div class="like-favorite">
-            <button @click="toggleFavorite">{{ favorited ? "Unfavorite" : "Favorite" }}</button>
-          </div>
+          <button @click="toggleLike">{{ liked ? "Unlike" : "Like" }}</button>
+          <button @click="toggleFavorite">{{ favorited ? "Unfavorite" : "Favorite" }}</button>
+
           <div class="rate">
-            <label for="rating">Your Rating:</label>
-            <select id="rating" v-model.number="userRating" @change="rateCoffee">
+            <label>Your Rating:</label>
+            <select v-model.number="userRating" @change="rateCoffee">
               <option disabled value="">Rate</option>
               <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
             </select>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Toast Confirmation -->
+    <div v-if="showToast" class="toast-confirm">
+      <span>{{ toastMessage }}</span>
+      <div class="toast-actions">
+        <button @click="toastAction">Yes</button>
+        <button @click="showToast = false">Cancel</button>
       </div>
     </div>
   </div>
@@ -104,8 +144,6 @@ import api from "../store/axios";
 export default {
   data() {
     return {
-      isRating: false,
-      userRating: null,
       coffees: [],
       filteredCoffees: [],
       loading: true,
@@ -119,18 +157,45 @@ export default {
 
       liked: false,
       favorited: false,
+      userRating: null,
+
+      coffeeFact: "",
+      showFactModal: false,
+      fetchingFact: false,
+      coffeeFactTimer: null,
+
+      topRecommendations: [],
+      loadingRecommendation: true,
+      bestMatch: null,
+      recommendationExplanation: "",
+
+      showToast: false,
+      toastMessage: "",
+      toastAction: null,
     };
   },
 
   mounted() {
     this.fetchCoffees();
+    this.fetchCoffeeFact();
+    this.fetchRecommendations();
+
+    this.coffeeFactTimer = setInterval(async () => {
+      if (!this.showFactModal) {
+        await this.fetchCoffeeFact();
+        this.showFactModal = true;
+      }
+    }, 120000);
+  },
+
+  beforeUnmount() {
+    if (this.coffeeFactTimer) clearInterval(this.coffeeFactTimer);
   },
 
   computed: {
     coffeeTypes() {
-      const types = this.coffees.map(c => c.coffee_type).filter(Boolean);
-      return [...new Set(types)];
-    }
+      return [...new Set(this.coffees.map(c => c.coffee_type).filter(Boolean))];
+    },
   },
 
   methods: {
@@ -138,11 +203,11 @@ export default {
       const search = this.searchQuery.toLowerCase();
 
       this.filteredCoffees = this.coffees.filter(c => {
-        const typeMatch =
-          this.selectedTypes.length === 0 || this.selectedTypes.includes(c.coffee_type);
+        const typeMatch = this.selectedTypes.length === 0 || this.selectedTypes.includes(c.coffee_type);
 
-        const milkMatch =
-          this.selectedMilk === "" || c.lactose.toLowerCase() === this.selectedMilk;
+        let milkMatch = true;
+        if (this.selectedMilk === "yes") milkMatch = c.lactose?.toLowerCase() === "yes";
+        else if (this.selectedMilk === "no") milkMatch = c.lactose?.toLowerCase() === "no";
 
         const searchMatch =
           c.coffee_name.toLowerCase().includes(search) ||
@@ -155,18 +220,33 @@ export default {
     async fetchCoffees() {
       try {
         const res = await api.get("/coffees");
-        this.coffees = res.data;
+        this.coffees = res.data.map(c => ({ ...c, id: c.coffee_id }));
         this.filteredCoffees = this.coffees;
       } catch (err) {
-        console.error("Error fetching coffees:", err);
+        console.error(err);
       } finally {
         this.loading = false;
       }
     },
 
+    updateCoffeeInLists(updated) {
+      const lists = ["coffees", "filteredCoffees", "topRecommendations"];
+
+      for (const listName of lists) {
+        const list = this[listName];
+        if (!Array.isArray(list)) continue;
+
+        const index = list.findIndex(c => c.id === updated.id);
+        if (index !== -1) {
+          this[listName].splice(index, 1, { ...list[index], ...updated });
+        }
+      }
+    },
+
     openModal(coffee) {
-      this.selectedCoffee = coffee;
+      this.selectedCoffee = { ...coffee };
       this.showModal = true;
+
       this.liked = coffee.likedByUser || false;
       this.favorited = coffee.favoritedByUser || false;
       this.userRating = coffee.userRating || null;
@@ -177,47 +257,126 @@ export default {
     },
 
     async toggleLike() {
-      if (!this.selectedCoffee) return;
       try {
         const res = await api.post(`/coffees/${this.selectedCoffee.id}/like`);
-        this.liked = res.data.liked;
-        this.selectedCoffee.likedByUser = this.liked;
+
         this.selectedCoffee.likes = res.data.likes;
-        const i = this.coffees.findIndex(c => c.id === this.selectedCoffee.id);
-        if (i !== -1) this.coffees[i].likes = res.data.likes;
-      } catch (err) { console.error(err); }
+        this.liked = res.data.liked;
+
+        this.updateCoffeeInLists({
+          id: this.selectedCoffee.id,
+          likes: res.data.likes,
+          likedByUser: res.data.liked
+        });
+      } catch (err) {
+        console.error(err);
+      }
     },
 
     async toggleFavorite() {
-      if (!this.selectedCoffee) return;
       try {
         const res = await api.post(`/coffees/${this.selectedCoffee.id}/favorite`);
-        this.favorited = res.data.favorited;
-        this.selectedCoffee.favoritedByUser = this.favorited;
+
         this.selectedCoffee.favorites = res.data.favorites;
-        const i = this.coffees.findIndex(c => c.id === this.selectedCoffee.id);
-        if (i !== -1) this.coffees[i].favorites = res.data.favorites;
-      } catch (err) { console.error(err); }
+        this.favorited = res.data.favorited;
+
+        this.updateCoffeeInLists({
+          id: this.selected.selectedCoffee,
+          favorites: res.data.favorites,
+          favoritedByUser: res.data.favorited
+        });
+      } catch (err) {
+        console.error(err);
+      }
     },
 
     async rateCoffee() {
-      if (!this.userRating || this.isRating) return;
-      this.isRating = true;
+      if (!this.userRating) return;
+
       try {
-        const res = await api.post(`/coffees/${this.selectedCoffee.id}/rate`, { rating: this.userRating });
-        const newAvg = res.data.rating;
-        this.selectedCoffee.rating = newAvg;
-        this.selectedCoffee.userRating = res.data.userRating;
-        const i = this.coffees.findIndex(c => c.id === this.selectedCoffee.id);
-        if (i !== -1) {
-          Object.assign(this.coffees[i], { rating: newAvg, userRating: res.data.userRating });
-        }
-      } catch (err) { console.error(err); }
-      finally { this.isRating = false; }
+        const res = await api.post(`/coffees/${this.selectedCoffee.id}/rate`, {
+          rating: this.userRating
+        });
+
+        this.selectedCoffee.rating = res.data.rating;
+
+        this.updateCoffeeInLists({
+          id: this.selectedCoffee.id,
+          rating: res.data.rating,
+          userRating: this.userRating
+        });
+      } catch (err) {
+        console.error(err);
+      }
     },
-  },
+
+    async fetchCoffeeFact() {
+      if (this.fetchingFact) return;
+
+      this.fetchingFact = true;
+
+      try {
+        const res = await api.get("/coffee-fact");
+        this.coffeeFact = res.data.fact || "Coffee boosts your productivity!";
+      } catch (err) {
+        this.coffeeFact = "Coffee boosts your productivity!";
+      } finally {
+        this.fetchingFact = false;
+      }
+    },
+
+    async fetchRecommendations() {
+      this.loadingRecommendation = true;
+
+      try {
+        const res = await api.get("/coffee-recommendation");
+
+        // FIX: DO NOT override values — use REAL backend values
+        this.topRecommendations = res.data.coffees.map(c => ({
+          id: c.coffee_id,
+          coffee_name: c.coffee_name,
+          coffee_type: c.coffee_type,
+
+          description: c.description,
+          ingredients: c.ingredients,
+
+          favorites: c.favorites,
+          likes: c.likes,
+          rating: c.rating,
+
+          minimum_price: c.minimum_price,
+          maximum_price: c.maximum_price,
+
+          coffee_image: c.coffee_image,
+          reasons: c.reasons || [],
+
+          likedByUser: c.likedByUser || false,
+          favoritedByUser: c.favoritedByUser || false,
+          userRating: c.userRating || null
+        }));
+
+        if (this.topRecommendations.length > 0) {
+          this.bestMatch = this.topRecommendations[0];
+          this.recommendationExplanation = this.bestMatch.reasons.join(", ");
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        this.loadingRecommendation = false;
+      }
+    },
+
+    onImageError(event) {
+      event.target.src = "/images/placeholder.png";
+    },
+
+    closeFactModal() {
+      this.showFactModal = false;
+    }
+  }
 };
 </script>
 
 <style src="../assets/catalog.css"></style>
 <style src="../assets/modal.css"></style>
+<style src="../assets/recommendation.css"></style>
