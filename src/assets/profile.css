@@ -1,11 +1,11 @@
 /* ===================== GENERAL PAGE STYLES ===================== */
 .profile-page {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 15px;
   font-family: 'Arial', sans-serif;
-  color: #5d4a47; /* soft brown */
-  background-color: #fff8f2; /* pastel cream */
+  color: #5d4a47;
+  background-color: #fff8f2;
 }
 
 /* ===================== HEADER ===================== */
@@ -13,16 +13,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .profile-header h1 {
-  font-size: 26px;
-  color: #6b4f4f; /* pastel brown */
+  font-size: 2rem;
+  color: #6b4f4f;
+  margin: 0;
 }
 
 .settings-btn {
-  background-color: #a8d5ba; /* pastel green */
+  background-color: #a8d5ba;
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
@@ -38,125 +41,128 @@
 
 /* ===================== BIO BOX ===================== */
 .bio-box {
-  background-color: #fff0e6; /* pastel apricot */
+  background-color: #fff0e6;
   padding: 20px 25px;
   border-radius: 12px;
   margin-bottom: 35px;
-  box-shadow: 0 4px 12px rgba(180, 120, 80, 0.12); /* soft pastel shadow */
+  box-shadow: 0 4px 12px rgba(180, 120, 80, 0.12);
 }
 
-.bio-box label {
-  font-weight: bold;
-  margin-bottom: 6px;
-  display: block;
-  color: #5d4a47;
-}
-
-.bio-box input {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  border: 1px solid #d9c6b2; /* pastel brown border */
+.bio-box p {
+  margin: 6px 0;
   font-size: 14px;
-  outline: none;
 }
 
-.readonly-input {
-  background: #f1f1f1;
-  border: 1px solid #ccc;
-  cursor: not-allowed;
-  color: #555;
-}
-
-/* ===================== BUTTONS ===================== */
-.bio-actions {
+.display-name-container {
   display: flex;
-  gap: 14px;
-  margin-top: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.save-btn {
-  padding: 10px 16px;
-  border-radius: 8px;
+.display-name-input {
+  font-size: 1.6rem;
   border: none;
-  background-color: #a86c4f;
-  color: white;
-  font-weight: bold;
+  border-bottom: 2px solid #d9c6b2;
+  background: transparent;
+  color: #6b4f4f;
+  min-width: 150px;
+  padding: 4px 2px;
+}
+
+.save-display-btn {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
   transition: background 0.2s;
 }
 
-.save-btn:hover {
-  background-color: #8b5a42;
+.save-display-btn:hover {
+  background-color: #45a049;
+}
+
+.notif {
+  color: #e74c3c;
+  font-size: 12px;
+}
+
+/* ===================== BIO ACTION BUTTON ===================== */
+.bio-actions {
+  margin-top: 10px;
 }
 
 .preference-btn {
-  padding: 10px 16px;
+  background-color: #6b4f4f;
+  color: #fff;
+  padding: 8px 16px;
   border-radius: 8px;
-  border: 1px solid #e0cfc0;
-  background-color: #fff8f3;
-  color: #7b4f36;
-  font-weight: 500;
+  border: none;
   cursor: pointer;
+  font-size: 14px;
   transition: background 0.2s;
 }
 
 .preference-btn:hover {
-  background-color: #f3e7df;
+  background-color: #5a3e3e;
 }
 
-.email {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #7d5a50; /* soft brown */
-}
-
-/* ===================== COFFEE SECTIONS ===================== */
+/* ===================== COFFEE SECTION ===================== */
 .coffee-section {
   margin-bottom: 35px;
 }
 
 .coffee-section h2 {
-  font-size: 20px;
-  margin-bottom: 14px;
-  border-bottom: 2px solid #d9c6b2;
-  padding-bottom: 6px;
-  color: #5d4a47;
+  font-size: 1.6rem;
+  color: #6b4f4f;
+  margin-bottom: 15px;
 }
 
-.empty-msg {
+/* ===================== PREFERENCES ===================== */
+.preferences-list {
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.preferences-list li {
+  margin-bottom: 6px;
   font-size: 14px;
-  color: #a78b7a; /* soft brown */
-  margin-bottom: 10px;
 }
 
 /* ===================== COFFEE GRID ===================== */
 .coffee-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
 }
 
-/* ===================== COFFEE CARD ===================== */
 .coffee-card {
-  background-color: #fff0e6; /* pastel apricot */
-  padding: 12px;
-  border-radius: 10px;
+  background-color: #fff0e6;
+  padding: 14px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(180, 120, 80, 0.08);
+  box-shadow: 0 2px 8px rgba(180, 120, 80, 0.08);
   font-size: 14px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .coffee-card:hover {
   transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(180, 120, 80, 0.18);
 }
 
 .coffee-card h3 {
   font-size: 16px;
-  margin: 8px 0 4px;
-  color: #6b4f4f; /* pastel brown */
+  margin: 6px 0 4px;
+  color: #6b4f4f;
 }
 
 .coffee-card p {
@@ -167,10 +173,57 @@
 
 .coffee-img {
   width: 100%;
-  height: 120px;
+  height: 140px;
   object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid #ffe6d6; /* subtle pastel border */
+  border-radius: 8px;
+  border: 1px solid #ffe6d6;
+}
+
+/* ===================== MUST TRY CARD BUTTONS ===================== */
+.must-try-comment {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.save-btn {
+  flex: 1;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+.delete-btn {
+  flex: 1;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* ===================== EMPTY MESSAGE ===================== */
+.empty-msg {
+  text-align: center;
+  font-size: 14px;
+  color: #7d5a50;
+  margin: 12px 0;
 }
 
 /* ===================== MODAL ===================== */
@@ -180,47 +233,39 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
   background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 20px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
 .modal {
   background: #fff;
-  width: 420px;
-  max-width: 100%;
-  padding: 30px 28px;
+  width: 100%;
+  max-width: 450px;
+  padding: 25px 20px;
   border-radius: 16px;
   box-shadow: 0 16px 50px rgba(0, 0, 0, 0.18);
-  animation: fadeIn 0.25s ease-out;
   display: flex;
   flex-direction: column;
-  gap: 18px; /* space between elements */
+  gap: 18px;
 }
 
 .modal h3 {
-  margin: 0 0 15px 0;
   font-weight: 600;
   font-size: 20px;
   color: #5d4a47;
   text-align: center;
 }
 
-.modal label {
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: #5d4a47;
-}
-
-.modal input {
+.modal input,
+.modal textarea {
   width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 12px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
   outline: none;
@@ -228,11 +273,16 @@
   box-sizing: border-box;
 }
 
+.review-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .confirm-btn {
@@ -265,8 +315,56 @@
   background: #c0392b;
 }
 
-/* Smooth animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-15px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ===================== LOADING ===================== */
+.loading {
+  text-align: center;
+  font-size: 16px;
+  color: #7d5a50;
+  padding: 20px;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .display-name-input {
+    font-size: 1.4rem;
+  }
+
+  .coffee-img {
+    height: 120px;
+  }
+
+  .coffee-card h3 {
+    font-size: 14px;
+  }
+
+  .coffee-card p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coffee-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .settings-btn {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+
+  .confirm-btn,
+  .cancel-btn {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+
+  .display-name-input {
+    font-size: 1.2rem;
+  }
 }

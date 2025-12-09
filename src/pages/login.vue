@@ -68,9 +68,9 @@ export default {
         setTimeout(() => {
           // 🔥 REDIRECT BASED ON ROLE
           if (role === "admin") {
-            this.$router.push("/admin/catalog");
+            this.$router.push("/admin/menu");
           } else {
-            this.$router.push("/main/catalog");
+            this.$router.push("/main/menu");
           }
         }, 500);
 

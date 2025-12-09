@@ -7,10 +7,11 @@ import MainLayout from '../layouts/mainlayout.vue'
 
 import Login from '../pages/login.vue'
 import Register from '../pages/register.vue'
-import Catalog from '../mpages/catalog.vue'
+import Menu from '../mpages/catalog.vue'
 import Profile from '../mpages/profile.vue'
 import Charts from '../mpages/charts.vue'
-import ManageUser from '../mpages/manageUser.vue'
+import ManageCoffee from '../mpages/managecoffee.vue'
+import UserLogs from '../mpages/logs.vue'
 import Preference from '@/mpages/preference.vue'
 
 const routes = [
@@ -29,9 +30,10 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       { path: 'preference', name: 'preference', component: Preference, meta: { role: ['user','admin'] }},
-      { path: 'catalog', name: 'catalog', component: Catalog, meta: { role: ['user','admin'] }},
+      { path: 'menu', name: 'menu', component: Menu, meta: { role: ['user','admin'] }},
       { path: 'profile', name: 'profile', component: Profile, meta: { role: ['user','admin'] }},
-      { path: 'ManageUser', name: 'ManageUser', component: ManageUser, meta: { role: ['admin'] }},
+      { path: 'mancoffee', name: 'manage coffee', component: ManageCoffee, meta: { role: ['admin'] }},
+      { path: 'userlogs', name: 'userlogs', component: UserLogs, meta: { role: ['admin'] }},
       { path: 'charts', name: 'charts', component: Charts, meta: { role: ['admin'] }},
     ]
   }
@@ -60,12 +62,12 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if ((to.name === 'login' || to.name === 'register') && auth.token) {
-    return next('/main/catalog')
+    return next('/main/menu')
   }
 
   const userRole = auth.user?.role
   if (to.meta.role && !to.meta.role.includes(userRole)) {
-    return next('/main/catalog') 
+    return next('/main/menu') 
   }
 
   next()

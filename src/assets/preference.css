@@ -1,7 +1,9 @@
-/* Preference Page Container */
+/* ===========================
+   PREFERENCE PAGE CONTAINER
+   =========================== */
 .preference-page {
   position: relative;
-  padding: 50px 35px 35px 35px; /* increased top padding for breathing space */
+  padding: 50px 35px 35px 35px; /* breathing space at top */
   max-width: 700px;
   margin: 50px auto;
   background-color: #fcf5f0;
@@ -11,7 +13,9 @@
   box-sizing: border-box;
 }
 
-/* Page Heading */
+/* ===========================
+   PAGE HEADING
+   =========================== */
 .preference-page h2 {
   font-size: 28px;
   font-weight: 700;
@@ -20,7 +24,9 @@
   text-align: center;
 }
 
-/* Skip Link */
+/* ===========================
+   SKIP LINK
+   =========================== */
 .skip-top {
   position: absolute;
   top: 15px;
@@ -40,20 +46,24 @@
   opacity: 1;
 }
 
-/* Form Layout */
+/* ===========================
+   FORM LAYOUT
+   =========================== */
 .preference-form {
   display: flex;
   flex-direction: column;
-  gap: 30px; /* more spacing between groups */
+  gap: 30px;
 }
 
 .preference-form .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* space between label and input */
+  gap: 6px;
 }
 
-/* Labels */
+/* ===========================
+   LABELS
+   =========================== */
 .preference-form label {
   font-weight: 500;
   color: #6e4d3d;
@@ -61,11 +71,13 @@
   display: block;
 }
 
-/* Inputs & Selects */
+/* ===========================
+   INPUTS & SELECTS
+   =========================== */
 .preference-form input,
 .preference-form select {
   width: 100%;
-  padding: 16px 18px; /* increased padding for breathing space */
+  padding: 16px 18px;
   border-radius: 12px;
   border: 1px solid #e0cfc0;
   font-size: 15px;
@@ -81,7 +93,9 @@
   box-shadow: 0 0 8px rgba(168, 108, 79, 0.3);
 }
 
-/* Checkbox / Yes-No Group */
+/* ===========================
+   CHECKBOX / YES-NO GROUP
+   =========================== */
 .checkbox-group {
   display: flex;
   gap: 30px;
@@ -94,7 +108,6 @@
   flex: 1;
 }
 
-/* Add subtle icon hint only for checkboxes (optional) */
 .checkbox-group label::before {
   content: "☑️ ";
   font-size: 14px;
@@ -107,7 +120,9 @@
   padding-left: 36px; /* space for pseudo icon */
 }
 
-/* Buttons Area */
+/* ===========================
+   ACTION BUTTONS
+   =========================== */
 .actions {
   display: flex;
   gap: 15px;
@@ -129,7 +144,6 @@
   background-color: #a86c4f;
   color: #fff;
 }
-
 .actions button[type="submit"]:hover {
   background-color: #8b5a42;
 }
@@ -139,12 +153,13 @@
   color: #7b4f36;
   border: 1px solid #e0cfc0;
 }
-
 .actions .skip-btn:hover {
   background-color: #f3e7df;
 }
 
-/* Message Styling */
+/* ===========================
+   MESSAGE STYLING
+   =========================== */
 .message {
   margin-top: 20px;
   font-size: 15px;
@@ -153,7 +168,9 @@
   font-weight: 500;
 }
 
-/* Responsive */
+/* ===========================
+   RESPONSIVE
+   =========================== */
 @media (max-width: 480px) {
   .preference-page {
     padding: 30px 20px 25px 20px;

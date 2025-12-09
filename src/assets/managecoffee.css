@@ -1,0 +1,250 @@
+/* ===================== GENERAL ===================== */
+.catalog-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fffaf6;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Poppins', sans-serif;
+  color: #4a4a4a;
+}
+
+.catalog-page h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #6b4226;
+}
+
+/* ===================== CONTROLS ===================== */
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.search-bar {
+  width: 400px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #a66c39;
+}
+
+.add-coffee-btn {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px 25px;
+  background-color: #a66c39;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.add-coffee-btn:hover {
+  background-color: #8c5730;
+}
+
+/* ===================== GRID & CARD ===================== */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.card {
+  background-color: #fff6ef;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 220px;
+  flex: 0 0 auto;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.coffee-img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+  color: #6b4226;
+}
+
+.card p {
+  font-size: 0.9rem;
+  margin: 3px 0;
+}
+
+/* ===================== CARD ACTIONS ===================== */
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #f6a93b;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #e0892a;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* ===================== MODAL ===================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 10px;
+}
+
+.modal-card {
+  background-color: #fffaf6;
+  padding: 30px 25px;
+  border-radius: 12px;
+  width: 500px;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.modal-card h3 {
+  margin-bottom: 20px;
+  color: #6b4226;
+  text-align: center;
+  font-weight: 600;
+}
+
+.modal-card form label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.modal-card form input[type="text"],
+.modal-card form input[type="number"],
+.modal-card form textarea,
+.modal-card form select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  transition: all 0.2s ease;
+}
+
+.modal-card form input[type="text"]:focus,
+.modal-card form input[type="number"]:focus,
+.modal-card form textarea:focus,
+.modal-card form select:focus {
+  outline: none;
+  border-color: #a66c39;
+  box-shadow: 0 0 5px rgba(166,108,57,0.3);
+}
+
+.modal-card form textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.modal-card form input[type="checkbox"] {
+  margin-left: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.modal-actions button[type="submit"] {
+  background-color: #a66c39;
+  color: #fff;
+}
+
+.modal-actions button[type="submit"]:hover {
+  background-color: #8c5730;
+}
+
+.modal-actions button[type="button"] {
+  background-color: #ccc;
+  color: #333;
+}
+
+.modal-actions button[type="button"]:hover {
+  background-color: #b3b3b3;
+}
+
+/* ===================== LOADING ===================== */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6b4226;
+  margin-top: 30px;
+}

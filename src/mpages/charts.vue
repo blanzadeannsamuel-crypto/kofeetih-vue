@@ -1,60 +1,67 @@
 <template>
   <div class="dsa-charts-page">
     <div class="header">
-      <h1>📊 Dashboard  {{ summaryData.currentYear }}</h1>
+      <h1>📊 Dashboard {{ summaryData.currentYear }}</h1>
     </div>
 
     <div class="summary-boxes">
       <div class="summary-card coffee-count">
         <h3>Total Coffees</h3>
-        <p>{{ summaryData.coffeeCount }}</p>
+        <h4>{{ summaryData.coffeeCount }}</h4>
       </div>
       <div class="summary-card user-count">
         <h3>Total Users</h3>
-        <p>{{ summaryData.userCount }}</p>
+        <h4>{{ summaryData.userCount }}</h4>
       </div>
     </div>
 
-    <!-- Trend / Top Coffee Report -->
     <div class="summary-boxes" v-if="!loading">
       <div class="summary-card trend-report">
-        <p>Top Recommended Coffee: {{ summaryData.topLikedCoffee?.coffee_name }} <strong>({{ summaryData.topLikedCoffee?.total_likes }} likes)</strong></p>
-        <p>Coffee Trend:  <strong>{{ summaryData.trendReport?.coffee_type }}</strong></p>
-        <p>Temperature Trend: <strong>{{ summaryData.trendReport?.temperature }}</strong></p>
+        <p>Top Recommended Coffee: {{ summaryData.topLikedCoffee?.coffee_name }}
+          <strong>({{ summaryData.topLikedCoffee?.total_likes }} likes)</strong>
+        </p>
+        <p>Top Rated Coffee: {{ summaryData.topRatedCoffee?.coffee_name }}
+            <strong>({{ summaryData.topRatedCoffee?.avg_rate }}⭐)</strong>
+        </p>
+        <p>Coffee Type Trend: <strong>{{ summaryData.trendReport?.coffee_type }}</strong></p>
+        <p>Serving Temperature Trend: <strong>{{ summaryData.trendReport?.temperature }}</strong></p>
+        <p>Coffee Type Trend 3 months from now: 
+      <strong>{{ summaryData.trendReport?.coffee_type_ma }}</strong>
+      </p>
+      <p>Serving temperature Trend 3 months from now: 
+        <strong>{{ summaryData.trendReport?.temperature_ma }}</strong>
+      </p>
       </div>
     </div>
 
     <section v-if="!loading">
-      <!-- Coffee Charts -->
       <div class="chart-section">
-        <h2>☕ Monthly Coffee Type – Moving Average (3-period)</h2>
-        <canvas id="monthlyCoffeeTypeMA"></canvas>
+        <h2>☕ Monthly Coffee Type – Moving Average</h2>
+        <canvas id="coffeeMA"></canvas>
       </div>
 
       <div class="chart-section">
         <h2>☕ Monthly Coffee Type – Exponential Forecast</h2>
-        <canvas id="monthlyCoffeeTypeEXP"></canvas>
-      </div>
-
-      <!-- Temperature Charts -->
-      <div class="chart-section">
-        <h2>🌡️ Temperature – Moving Average (3-period)</h2>
-        <canvas id="temperatureMA"></canvas>
+        <canvas id="coffeeEXP"></canvas>
       </div>
 
       <div class="chart-section">
-        <h2>🌡️ Temperature – Exponential Forecast</h2>
-        <canvas id="temperatureEXP"></canvas>
-      </div>
-
-      <!-- Descriptive Charts -->
-      <div class="chart-section">
-        <h2>🏆 Top 10 Recommended Coffees (Total Likes)</h2>
-        <canvas id="topRecommended"></canvas>
+        <h2>🌡️ Serving Temperature – Moving Average</h2>
+        <canvas id="tempMA"></canvas>
       </div>
 
       <div class="chart-section">
-        <h2>⭐ Top 10 Rated Coffees (Average Rating)</h2>
+        <h2>🌡️ Serving Temperature – Exponential Forecast</h2>
+        <canvas id="tempEXP"></canvas>
+      </div>
+
+      <div class="chart-section">
+        <h2>🏆 Top 10 Recommended Coffees (Likes)</h2>
+        <canvas id="topLikes"></canvas>
+      </div>
+
+      <div class="chart-section">
+        <h2>⭐ Top 10 Rated Coffees</h2>
         <canvas id="topRated"></canvas>
       </div>
     </section>
@@ -66,8 +73,7 @@ import api from "../store/axios";
 import { Chart, registerables } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-Chart.register(...registerables);
-Chart.register(ChartDataLabels);
+Chart.register(...registerables, ChartDataLabels);
 
 export default {
   data() {
@@ -84,48 +90,17 @@ export default {
   },
 
   methods: {
-    /* ------------------------------------------
-      ⭐ YEAR LABEL PLUGIN (small top-right text)
-    -------------------------------------------*/
-    chartYearPlugin() {
-      const vue = this;
-      return {
-        id: "annotationYear",
-        afterDraw(chart) {
-          const { ctx } = chart;
-          ctx.save();
-          ctx.font = "12px Poppins";
-          ctx.fillStyle = "#444";
-          ctx.textAlign = "right";
-          const y = Math.max(chart.height * 0.01, 6);
-          ctx.fillText(
-            vue.summaryData.currentYear,
-            chart.width - 10,
-            y
-          );
-          ctx.restore();
-        }
-      };
-    },
-
     async fetchSummary() {
       try {
         const res = await api.get("/charts/summary");
         this.summaryData = res.data;
 
-        this.summaryData.topOneRecommended = this.summaryData.topRecommended?.[0] || null;
-
         this.$nextTick(() => {
-          // Coffee charts
-          this.renderMonthlyMA();
-          this.renderMonthlyEXP();
-
-          // Temperature charts
-          this.renderTemperatureMA();
-          this.renderTemperatureEXP();
-
-          // Descriptive charts
-          this.renderTopRecommended();
+          this.renderCoffeeMA();
+          this.renderCoffeeEXP();
+          this.renderTempMA();
+          this.renderTempEXP();
+          this.renderTopLikes();
           this.renderTopRated();
         });
       } catch (e) {
@@ -135,287 +110,254 @@ export default {
       }
     },
 
-    getLineColor(key) {
-      const map = {
-        "Strong": "rgba(255,99,132,1)",
-        "Balanced": "rgba(54,162,235,1)",
-        "Sweet": "rgba(255,206,86,1)",
-        "Hot": "rgba(255,99,132,1)",
-        "Cold": "rgba(54,162,235,1)"
-      };
-      return map[key] || `hsl(${Math.random() * 360},70%,50%)`;
+    getColor(key) {
+      return `hsl(${Math.random() * 360},70%,45%)`;
     },
 
-    /* ---------------- MOVING AVERAGE ---------------- */
-    renderMonthlyMA() {
-      const ctx = document.getElementById("monthlyCoffeeTypeMA")?.getContext("2d");
+    /* ====================== COFFEE TYPE MOVING AVERAGE ====================== */
+    renderCoffeeMA() {
+      const ctx = document.getElementById("coffeeMA");
       if (!ctx) return;
-      if (this.chartInstances.monthlyCoffeeTypeMA) this.chartInstances.monthlyCoffeeTypeMA.destroy();
 
       const actual = this.summaryData.monthlyData?.coffee_types || {};
       const forecast = this.summaryData.monthlyForecast?.coffee_types || {};
-      const labels = [...this.monthLabels];
+
       const datasets = [];
 
-      Object.entries(actual).forEach(([key, values]) => {
-        const color = this.getLineColor(key);
+      Object.entries(actual).forEach(([label, values]) => {
+        const color = this.getColor(label);
 
         datasets.push({
-          label: `${key} – Actual`,
+          label: `${label} – Actual`,
           data: values,
           borderColor: color,
-          borderWidth: 2,
           backgroundColor: "transparent",
-          tension: 0.4,
-          pointRadius: 4,
-          datalabels: { display: false }
+          tension: 0.4
         });
 
-        if (forecast[key]) {
-          const forecastData = Array(values.length).fill(null).concat(forecast[key].ma_values);
+        const f = forecast[label];
+        if (f) {
           datasets.push({
-            label: `${key} – Forecast (MA)`,
-            data: forecastData,
+            label: `${label} – MA Forecast`,
+            data: [...Array(values.length).fill(null), ...f.ma_forecast],
             borderColor: color,
-            borderWidth: 2,
-            borderDash: [10,5],
+            borderDash: [8,4],
             backgroundColor: "transparent",
-            tension: 0.4,
-            pointRadius: 4,
-            datalabels: { display: false }
+            tension: 0.4
           });
         }
       });
 
-      const forecastLabels = forecast[Object.keys(forecast)[0]]?.ma_labels || [];
+      const maLabels = forecast[Object.keys(forecast)[0]]?.ma_labels || [];
 
-      this.chartInstances.monthlyCoffeeTypeMA = new Chart(ctx, {
+      this.chartInstances.coffeeMA = new Chart(ctx, {
         type: "line",
-        plugins: [this.chartYearPlugin()],
-        data: { labels: [...labels, ...forecastLabels], datasets },
-        options: {
+        data: {
+          labels: [...this.monthLabels, ...maLabels],
+          datasets
+        },
+        options: { 
           responsive: true,
-          interaction: { mode: "index", intersect: false },
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true },
-            annotationYear: true
-          },
-          scales: { y: { beginAtZero: true } }
+          plugins: { datalabels: { display: false } }
         }
       });
     },
 
-    /* ---------------- EXPONENTIAL FORECAST ---------------- */
-    renderMonthlyEXP() {
-      const ctx = document.getElementById("monthlyCoffeeTypeEXP")?.getContext("2d");
+    /* ====================== COFFEE TYPE EXPONENTIAL FORECAST ====================== */
+    renderCoffeeEXP() {
+      const ctx = document.getElementById("coffeeEXP");
       if (!ctx) return;
-      if (this.chartInstances.monthlyCoffeeTypeEXP) this.chartInstances.monthlyCoffeeTypeEXP.destroy();
 
       const actual = this.summaryData.monthlyData?.coffee_types || {};
       const forecast = this.summaryData.monthlyForecast?.coffee_types || {};
-      const labels = ["Sep","Oct","Nov","Dec"];
+
       const datasets = [];
 
-      Object.entries(actual).forEach(([key, values]) => {
-        const color = this.getLineColor(key);
+      Object.entries(actual).forEach(([label, values]) => {
+        const color = this.getColor(label);
         const last4 = values.slice(-4);
 
         datasets.push({
-          label: `${key} – Actual`,
+          label: `${label} – Actual`,
           data: last4,
           borderColor: color,
-          borderWidth: 2,
           backgroundColor: "transparent",
-          tension: 0.4,
-          pointRadius: 4,
-          datalabels: { display: false }
+          tension: 0.4
         });
 
-        if (forecast[key]) {
-          const forecastData = Array(last4.length).fill(null).concat(forecast[key].exp_values);
+        const f = forecast[label];
+        if (f) {
           datasets.push({
-            label: `${key} – Forecast (EXP)`,
-            data: forecastData,
+            label: `${label} – EXP Forecast`,
+            data: [...Array(last4.length).fill(null), ...f.exp_forecast],
             borderColor: color,
-            borderWidth: 2,
-            borderDash: [10,5],
+            borderDash: [8,4],
             backgroundColor: "transparent",
-            tension: 0.4,
-            pointRadius: 4,
-            datalabels: { display: false }
+            tension: 0.4
           });
         }
       });
 
-      const forecastLabels = forecast[Object.keys(forecast)[0]]?.exp_labels || [];
+      const expLabels = forecast[Object.keys(forecast)[0]]?.exp_labels || [];
 
-      this.chartInstances.monthlyCoffeeTypeEXP = new Chart(ctx, {
+      this.chartInstances.coffeeEXP = new Chart(ctx, {
         type: "line",
-        plugins: [this.chartYearPlugin()],
-        data: { labels: [...labels, ...forecastLabels], datasets },
-        options: {
+        data: {
+          labels: ["Sep","Oct","Nov","Dec", ...expLabels],
+          datasets
+        },
+        options: { 
           responsive: true,
-          interaction: { mode: "index", intersect: false },
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true },
-            annotationYear: true
-          },
-          scales: { y: { beginAtZero: true } }
+          plugins: { datalabels: { display: false } }
         }
       });
     },
 
-    /* ---------------- TEMPERATURE ---------------- */
-    renderTemperatureMA() {
-      const ctx = document.getElementById("temperatureMA")?.getContext("2d");
+    /* ====================== TEMPERATURE (serving_temp) MA ====================== */
+    renderTempMA() {
+      const ctx = document.getElementById("tempMA");
       if (!ctx) return;
-      if (this.chartInstances.temperatureMA) this.chartInstances.temperatureMA.destroy();
 
-      const actual = this.summaryData.monthlyData?.temperature || {};
-      const forecast = this.summaryData.monthlyForecast?.temperature || {};
-      const labels = [...this.monthLabels];
+      const actual = this.summaryData.monthlyData?.serving_temp || {};
+      const forecast = this.summaryData.monthlyForecast?.serving_temp || {};
+
       const datasets = [];
 
-      Object.entries(actual).forEach(([key, values]) => {
-        const color = this.getLineColor(key);
+      Object.entries(actual).forEach(([label, values]) => {
+        const color = this.getColor(label);
 
         datasets.push({
-          label: `${key} – Actual`,
+          label: `${label} – Actual`,
           data: values,
           borderColor: color,
-          borderWidth: 2,
           backgroundColor: "transparent",
-          tension: 0.4,
-          pointRadius: 4,
-          datalabels: { display: false }
+          tension: 0.4
         });
 
-        if (forecast[key]) {
-          const forecastData = Array(values.length).fill(null).concat(forecast[key].ma_values);
+        const f = forecast[label];
+        if (f) {
           datasets.push({
-            label: `${key} – Forecast (MA)`,
-            data: forecastData,
+            label: `${label} – MA Forecast`,
+            data: [...Array(values.length).fill(null), ...f.ma_forecast],
             borderColor: color,
-            borderWidth: 2,
-            borderDash: [10,5],
+            borderDash: [8,4],
             backgroundColor: "transparent",
-            tension: 0.4,
-            pointRadius: 4,
-            datalabels: { display: false }
+            tension: 0.4
           });
         }
       });
 
-      const forecastLabels = forecast[Object.keys(forecast)[0]]?.ma_labels || [];
+      const maLabels = forecast[Object.keys(forecast)[0]]?.ma_labels || [];
 
-      this.chartInstances.temperatureMA = new Chart(ctx, {
+      this.chartInstances.tempMA = new Chart(ctx, {
         type: "line",
-        plugins: [this.chartYearPlugin()],
-        data: { labels: [...labels, ...forecastLabels], datasets },
-        options: {
+        data: {
+          labels: [...this.monthLabels, ...maLabels],
+          datasets
+        },
+        options: { 
           responsive: true,
-          interaction: { mode: "index", intersect: false },
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true },
-            annotationYear: true
-          },
-          scales: { y: { beginAtZero: true } }
+          plugins: { datalabels: { display: false } }
         }
       });
     },
 
-    renderTemperatureEXP() {
-      const ctx = document.getElementById("temperatureEXP")?.getContext("2d");
+    /* ====================== TEMPERATURE (serving_temp) EXP ====================== */
+    renderTempEXP() {
+      const ctx = document.getElementById("tempEXP");
       if (!ctx) return;
-      if (this.chartInstances.temperatureEXP) this.chartInstances.temperatureEXP.destroy();
 
-      const actual = this.summaryData.monthlyData?.temperature || {};
-      const forecast = this.summaryData.monthlyForecast?.temperature || {};
-      const labels = ["Sep","Oct","Nov","Dec"];
+      const actual = this.summaryData.monthlyData?.serving_temp || {};
+      const forecast = this.summaryData.monthlyForecast?.serving_temp || {};
+
       const datasets = [];
 
-      Object.entries(actual).forEach(([key, values]) => {
-        const color = this.getLineColor(key);
+      Object.entries(actual).forEach(([label, values]) => {
+        const color = this.getColor(label);
         const last4 = values.slice(-4);
 
         datasets.push({
-          label: `${key} – Actual`,
+          label: `${label} – Actual`,
           data: last4,
           borderColor: color,
-          borderWidth: 2,
-          backgroundColor: "transparent",
-          tension: 0.4,
-          pointRadius: 4,
-          datalabels: { display: false }
+          tension: 0.4
         });
 
-        if (forecast[key]) {
-          const forecastData = Array(last4.length).fill(null).concat(forecast[key].exp_values);
+        const f = forecast[label];
+        if (f) {
           datasets.push({
-            label: `${key} – Forecast (EXP)`,
-            data: forecastData,
+            label: `${label} – EXP Forecast`,
+            data: [...Array(last4.length).fill(null), ...f.exp_forecast],
             borderColor: color,
-            borderWidth: 2,
-            borderDash: [10,5],
-            backgroundColor: "transparent",
-            tension: 0.4,
-            pointRadius: 4,
-            datalabels: { display: false }
+            borderDash: [8,4],
+            tension: 0.4
           });
         }
       });
 
-      const forecastLabels = forecast[Object.keys(forecast)[0]]?.exp_labels || [];
+      const expLabels = forecast[Object.keys(forecast)[0]]?.exp_labels || [];
 
-      this.chartInstances.temperatureEXP = new Chart(ctx, {
+      this.chartInstances.tempEXP = new Chart(ctx, {
         type: "line",
-        plugins: [this.chartYearPlugin()],
-        data: { labels: [...labels, ...forecastLabels], datasets },
-        options: {
+        data: {
+          labels: ["Sep","Oct","Nov","Dec", ...expLabels],
+          datasets
+        },
+        options: { 
           responsive: true,
-          interaction: { mode: "index", intersect: false },
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true },
-            annotationYear: true
-          },
-          scales: { y: { beginAtZero: true } }
+          plugins: { datalabels: { display: false } }
         }
       });
     },
 
-    /* ---------------- TOP RECOMMENDED ---------------- */
-    renderTopRecommended() {
-      const ctx = document.getElementById("topRecommended")?.getContext("2d");
+    /* ====================== TOP LIKES ====================== */
+    renderTopLikes() {
+      const ctx = document.getElementById("topLikes");
       if (!ctx) return;
-      if (this.chartInstances.topByLikes) this.chartInstances.topByLikes.destroy();
 
       const labels = this.summaryData.topByLikes.map(c => c.coffee_name);
       const data = this.summaryData.topByLikes.map(c => c.total_likes);
 
-      this.chartInstances.topByLikes= new Chart(ctx, {
+      this.chartInstances.topLikes = new Chart(ctx, {
         type: "bar",
-        data: { labels, datasets: [{ label: "Total Likes", data, backgroundColor: "rgba(54,162,235,0.6)", borderColor: "rgba(54,162,235,1)", borderWidth: 1 }] },
-        options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, tooltip: { enabled: true }, datalabels: { anchor: 'end', align: 'right', color: '#000' } }, scales: { x: { beginAtZero: true } } }
+        data: {
+          labels,
+          datasets: [{
+            label: "Total Likes",
+            data
+          }]
+        },
+        options: { 
+          indexAxis: "y",
+          responsive: true,
+          plugins: { datalabels: { display: false } }
+        }
       });
     },
 
-    /* ---------------- TOP RATED ---------------- */
+    /* ====================== TOP RATED ====================== */
     renderTopRated() {
-      const ctx = document.getElementById("topRated")?.getContext("2d");
+      const ctx = document.getElementById("topRated");
       if (!ctx) return;
-      if (this.chartInstances.topByRating) this.chartInstances.topByRating.destroy();
 
       const labels = this.summaryData.topByRating.map(c => c.coffee_name);
       const data = this.summaryData.topByRating.map(c => parseFloat(c.avg_rate));
 
-      this.chartInstances.topByRating = new Chart(ctx, {
+      this.chartInstances.topRated = new Chart(ctx, {
         type: "bar",
-        data: { labels, datasets: [{ label: "Average Rating", data, backgroundColor: "rgba(255,206,86,0.6)", borderColor: "rgba(255,206,86,1)", borderWidth: 1 }] },
-        options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, tooltip: { enabled: true }, datalabels: { anchor: 'end', align: 'right', color: '#000' } }, scales: { x: { beginAtZero: true, max: 5 } } }
+        data: {
+          labels,
+          datasets: [{
+            label: "Avg Rating",
+            data
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          scales: { x: { max: 5 } },
+          plugins: { datalabels: { display: false } }
+        }
       });
     }
   }

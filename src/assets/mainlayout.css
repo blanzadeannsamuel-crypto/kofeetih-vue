@@ -1,3 +1,4 @@
+/* ===================== GENERAL ===================== */
 html, body {
   margin: 0;
   padding: 0;
@@ -14,32 +15,39 @@ html, body {
   min-height: 100vh;
 }
 
-/* ===========================
-   TOPBAR (Logo left, logout beside nav)
-   =========================== */
+/* ===================== TOPBAR ===================== */
 .topbar {
   width: 100%;
   background-color: #7b4f36;
   color: white;
-  padding: 0.35rem 1.5rem;
-  min-height: 48px;
+  padding: 0.4rem 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 20px; /* space between logo and nav */
+  justify-content: center; /* center logo */
+  position: relative; /* for nav positioning */
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  flex-wrap: wrap;
 }
 
+/* Centered logo */
 .logo {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #fcecd8;
+  text-align: center;
+  position: relative;
+  top: -5px;
 }
 
+/* Navigation items and logout on right side */
 .top-nav {
   display: flex;
-  gap: 15px; /* space between normal nav items */
-  align-items: center;
+  gap: 15px;
+  position: absolute;
+  right: 1.5rem; /* align to right */
+  top: 50%;
+  transform: translateY(-50%);
+  flex-wrap: wrap;
 }
 
 .nav-item {
@@ -47,10 +55,11 @@ html, body {
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 500;
-  padding: 4px 6px;
+  padding: 4px 8px;
   background: none;
   border: none;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .nav-item:hover,
@@ -59,13 +68,12 @@ html, body {
   color: #ffffff;
 }
 
-/* LOGOUT NAV ITEM: add spacing from Settings */
+/* Logout button */
 .logout {
   background-color: #d86c5b;
   color: #fff;
   border-radius: 6px;
-  padding: 4px 5px;
-  margin-left: 5in; /* spacing from the previous nav link (Settings) */
+  padding: 6px 12px;
   transition: 0.2s;
 }
 
@@ -73,9 +81,7 @@ html, body {
   background-color: #b45a48;
 }
 
-/* ===========================
-   CONTENT AREA
-   =========================== */
+/* ===================== MAIN CONTENT ===================== */
 .main-content {
   flex: 1;
   padding: 1rem 1.5rem;
@@ -90,14 +96,13 @@ html, body {
 
 .content {
   background-color: #fff8f3;
-  padding: 1rem;
-  border-radius: 10px;
+  padding: 1.2rem;
+  border-radius: 12px;
   min-height: 70vh;
+  box-shadow: 0 2px 10px rgba(123,79,54,0.05);
 }
 
-/* ===========================
-   LOGOUT MODAL
-   =========================== */
+/* ===================== MODAL ===================== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -109,13 +114,16 @@ html, body {
   justify-content: center;
   align-items: center;
   z-index: 999;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .modal {
   background: #fff8f3;
-  padding: 28px 25px;
+  padding: 25px 20px;
   border-radius: 12px;
-  width: 360px;
+  width: 100%;
+  max-width: 360px;
   text-align: center;
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
@@ -136,6 +144,7 @@ html, body {
   display: flex;
   justify-content: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .btn-confirm {
@@ -147,6 +156,7 @@ html, body {
   font-weight: 600;
   background-color: #d86c5b;
   color: white;
+  transition: 0.2s;
 }
 
 .btn-confirm:hover {
@@ -162,23 +172,44 @@ html, body {
   font-weight: 600;
   background-color: #e8dcd3;
   color: #7b4f36;
+  transition: 0.2s;
 }
 
 .btn-cancel:hover {
   background-color: #d9cabe;
 }
 
-/* RESPONSIVE */
-@media (max-width: 700px) {
-  .top-nav {
-    gap: 12px;
-    justify-content: center;
-  }
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 900px) {
   .topbar {
-    padding: 0.4rem 0.8rem;
-    min-height: 55px;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
   }
-  .top-right {
-    margin-left: 1rem; /* reduce spacing on small screens */
+
+  .top-nav {
+    position: static;
+    transform: none;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 0.35rem 0.8rem;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .nav-item, .logout {
+    font-size: 0.8rem;
+    padding: 4px 8px;
   }
 }
